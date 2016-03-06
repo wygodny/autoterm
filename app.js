@@ -5,6 +5,12 @@ var path = require('path');
 var server = require('socket.io');
 var pty = require('pty.js');
 var fs = require('fs');
+var Datastore = require('nedb');
+var db = {
+    sessions: new Datastore()
+}
+
+db.sessions.loadDatabase()
 
 var opts = require('optimist')
     .options({
@@ -35,7 +41,7 @@ var opts = require('optimist')
         port: {
             demand: true,
             alias: 'p',
-            description: 'wetty listen port'
+            description: 'autoterm listen port'
         },
     }).boolean('allow_discovery').argv;
 
@@ -75,8 +81,8 @@ process.on('uncaughtException', function(e) {
 var httpserv;
 
 var app = express();
-app.get('/wetty/ssh/:user', function(req, res) {
-    res.sendfile(__dirname + '/public/wetty/index.html');
+app.get('/autoterm/ssh/:user', function(req, res) {
+    res.sendfile(__dirname + '/public/autoterm/index.html');
 });
 app.use('/', express.static(path.join(__dirname, 'public')));
 
@@ -90,13 +96,13 @@ if (runhttps) {
     });
 }
 
-var io = server(httpserv,{path: '/wetty/socket.io'});
+var io = server(httpserv,{path: '/autoterm/socket.io'});
 io.on('connection', function(socket){
     var sshuser = '';
     var request = socket.request;
     console.log((new Date()) + ' Connection accepted.');
-    if (match = request.headers.referer.match('/wetty/ssh/.+$')) {
-        sshuser = match[0].replace('/wetty/ssh/', '') + '@';
+    if (match = request.headers.referer.match('/autoterm/ssh/.+$')) {
+        sshuser = match[0].replace('/autoterm/ssh/', '') + '@';
     } else if (globalsshuser) {
         sshuser = globalsshuser + '@';
     }
@@ -118,7 +124,8 @@ io.on('connection', function(socket){
     console.log((new Date()) + " PID=" + term.pid + " STARTED on behalf of user=" + sshuser)
     term.on('data', function(data) {
         socket.emit('output', data);
-    });
+    });    
+
     term.on('exit', function(code) {
         console.log((new Date()) + " PID=" + term.pid + " ENDED")
     });
@@ -130,5 +137,19 @@ io.on('connection', function(socket){
     });
     socket.on('disconnect', function() {
         term.end();
+    });
+
+    socket.on('getSessionsList', function() {
+        db.sessions.find({}, function (err, docs) {
+            socket.emit('sessionsList', docs);
+        });
+    });
+
+    socket.on('addNewSession', function(data) {
+        console.log("insert data", data)
+
+        db.sessions.insert(data, function (err, newDoc) { 
+            socket.emit("newSessionAdded", newDoc)
+        });
     });
 })

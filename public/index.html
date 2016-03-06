@@ -3,10 +3,12 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Wetty - The WebTTY Terminal Emulator</title>
-    <script src="/wetty/hterm_all.js"></script>
-    <script src="/wetty/socket.io/socket.io.js"></script>
-    <script src="/wetty/wetty.js"></script>
+    <title>autoterm</title>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
     <style>
         html,
         body {
@@ -15,16 +17,69 @@
             margin: 0px;
         }
         #terminal {
+            float: right;
             display: block;
             position: relative;
-            width: 100%;
+            width: 70%;
+            height: 100%;
+        }
+        #sidebar {
+            float: left;
+            display: block;
+            position: relative;
+            width: 30%;
             height: 100%;
         }
     </style>
 </head>
 
 <body>
+    <div id="sidebar">
+        <div class="row">
+            <div class="col-md-12">
+                <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#add-session-modal">
+                  New session 
+                </button>
+            </div>            
+            <div class="col-md-12">
+                <div class="list-group" id="sessions-list">
+                </div>
+            </div>
+        </div>
+    </div>
     <div id="terminal"></div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="add-session-modal" tabindex="-1" role="dialog" aria-labelledby="add-session-modalLabel">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="add-session-modalLabel">Create new session</h4>
+          </div>
+            <form id="add-new-session-form">
+              <div class="modal-body">
+                <input class="form-control" name="add-new-session-form-name" placeholder="Name" type="text" />
+                <input class="form-control" name="add-new-session-form-host" placeholder="Host" type="text" />
+                <input class="form-control" name="add-new-session-form-user" placeholder="User" type="text" />              
+                <input class="form-control" name="add-new-session-form-pass" placeholder="Pass" type="password" />              
+              </div>
+
+              <div class="modal-footer">
+                <button type="reset" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-primary">Create</button>
+              </div>
+            </form>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-2.2.1.min.js"></script>    
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+    <script src="/autoterm/hterm_all.js"></script>
+    <script src="/autoterm/socket.io/socket.io.js"></script>
+    <script src="/autoterm/autoterm.js"></script>
 </body>
 
 </html>

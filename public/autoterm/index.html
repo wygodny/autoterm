@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>autoterm</title>
+    <script src="/autoterm/hterm_all.js"></script>
+    <script src="/autoterm/socket.io/socket.io.js"></script>
+    <script src="/autoterm/autoterm.js"></script>
+    <style>
+        html,
+        body {
+            height: 100%;
+            width: 100%;
+            margin: 0px;
+        }
+        #terminal {
+            float: right;
+            display: block;
+            position: relative;
+            width: 70%;
+            height: 100%;
+        }
+        #sidebar {
+            float: left;
+            display: block;
+            position: relative;
+            width: 30%;
+            height: 100%;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="sidebar">
+        test
+    </div>
+    <div id="terminal"></div>
+</body>
+
+</html>
